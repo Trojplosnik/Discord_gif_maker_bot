@@ -26,7 +26,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         //sendMessage.setReplyToMessageId(userMessage.getMessageId());
         sendMessage.setText(text);
         try {
-            execute(sendMessage); // Call method to send the message
+            execute(sendMessage);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
@@ -34,11 +34,14 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        // We check if the update has a message and the message has text
+
 
         Message userMessage = update.getMessage();
         if (update.hasMessage() && userMessage.hasText()) {
             switch (userMessage.getText()) {
+                case "/start":
+                    sendMsg(userMessage, "Hello, " + userMessage.getChat().getUserName() + '!');
+                    break;
                 case "/haruhi":
                     sendMsg(userMessage, "https://www.youtube.com/watch?v=IhhHtKg3S20&list=WL&index=79");
                     break;
@@ -46,13 +49,13 @@ public class TelegramBot extends TelegramLongPollingBot {
                     sendMsg(userMessage, "I need help too(((");
                     break;
                 default:
-                    if(userMessage.getText().indexOf("https://www.youtube.com/watch?v=") == 0)
+                    if(userMessage.getText().indexOf("https://www.youtube.com/watch?v=") == 0 || userMessage.getText().indexOf("https://youtu.be/") == 0)
                     {
-                        sendMsg(userMessage, "True");
+                        sendMsg(userMessage, "Correct link");
                     }
                     else
                     {
-                        sendMsg(userMessage, "Hi "+ userMessage.getChat().getUserName() + " nice to meet you!");
+                        sendMsg(userMessage, "Wrong link");
                     }
             }
         }
