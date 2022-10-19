@@ -52,7 +52,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     }
                     else
                     {
-                        sendMsg(userMessage, "Hi "+ userMessage.getChat().getUserName() + " nice to meet you!");
+                        sendMsg(userMessage, "Wrong link");
                     }
             }
         }
