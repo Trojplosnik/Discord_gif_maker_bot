@@ -23,21 +23,21 @@ public class DemoApplication {
     public static void main(String[] args) {
         YoutubeDownloader downloader = new YoutubeDownloader();
 
-        String videoId = "Ope4icw6bVk";
+        String videoId = "RdYsLC0GELo";
 
         RequestVideoInfo request = new RequestVideoInfo(videoId);
         Response<VideoInfo> response = downloader.getVideoInfo(request);
         VideoInfo video = response.data();
 
-        List<VideoFormat> videoFormats = video.videoFormats();
+//        List<VideoFormat> videoFormats = video.videoFormats();
 
-        File outputDir = new File("my_videos");
-        Format format = videoFormats.get(0);
+        File outputDir = new File("C:\\Users\\shiln\\IdeaProjects\\Discord_gif_maker_bot\\discord_gif_maker_bot\\downloads");
+        Format format = video.bestVideoFormat();
 
         RequestVideoFileDownload request_video_download = new RequestVideoFileDownload(format)
                 // optional params
                 .saveTo(outputDir) // by default "videos" directory
-                .renameTo("video") // by default file name will be same as video title on youtube
+                .renameTo("video_silence") // by default file name will be same as video title on youtube
                 .overwriteIfExists(true); // if false and file with such name already exits sufix will be added video(1).mp4
         Response<File> response_video_download = downloader.downloadVideoFile(request_video_download);
         File data = response_video_download.data();
