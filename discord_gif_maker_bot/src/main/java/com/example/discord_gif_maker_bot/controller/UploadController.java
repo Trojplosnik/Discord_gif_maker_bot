@@ -37,7 +37,7 @@ public class UploadController {
                          int end,
                           int speed,
                          boolean repeat) throws IOException, FrameGrabber.Exception {
-        String location = "C:\\Users\\A\\Pictures\\";
+        String location = "C:\\Tasks\\Java\\Discord_gif_maker_bot\\discord_gif_maker_bot\\downloads\\";
 //        File videoFile = new File(location + "/" + System
 //                .currentTimeMillis() + ".mp4");
 //        file.transferTo(videoFile);

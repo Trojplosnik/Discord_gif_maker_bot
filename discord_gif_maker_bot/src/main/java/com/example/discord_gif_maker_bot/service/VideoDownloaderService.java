@@ -12,7 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class VideoDownloaderService {
-    public static void VideoDownloader(String videoID) {
+    public static File VideoDownloader(String videoID) {
         YoutubeDownloader downloader = new YoutubeDownloader();
 
         RequestVideoInfo request = new RequestVideoInfo(videoID);
@@ -31,5 +31,6 @@ public class VideoDownloaderService {
                 .overwriteIfExists(true); // if false and file with such name already exits sufix will be added video(1).mp4
         Response<File> response_video_download = downloader.downloadVideoFile(request_video_download);
         File data = response_video_download.data();
+        return data;
     }
 }
