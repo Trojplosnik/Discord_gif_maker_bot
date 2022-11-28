@@ -5,4 +5,7 @@
     <file type="web" url="file://$PROJECT_DIR$/discord_gif_maker_bot" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="corretto-17" project-jdk-type="JavaSDK" />
+  <component name="ProjectType">
+    <option name="id" value="jpab" />
+  </component>
 </project>

@@ -12,12 +12,5 @@ public class DiscordGifMakerBotApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(DiscordGifMakerBotApplication.class, args);
-
-//		try {
-//			TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-//			botsApi.registerBot(new TelegramBot());
-//		} catch (TelegramApiException e) {
-//			e.printStackTrace();
-//		}
 	}
 }

@@ -39,24 +39,20 @@ public class TelegramBot extends TelegramLongPollingBot {
         Message userMessage = update.getMessage();
         if (update.hasMessage() && userMessage.hasText()) {
             switch (userMessage.getText()) {
-                case "/start":
-                    sendMsg(userMessage, "Hello, " + userMessage.getChat().getUserName() + '!');
-                    break;
-                case "/haruhi":
-                    sendMsg(userMessage, "https://www.youtube.com/watch?v=IhhHtKg3S20&list=WL&index=79");
-                    break;
-                case "/help":
-                    sendMsg(userMessage, "I need help too(((");
-                    break;
-                default:
-                    if(userMessage.getText().indexOf("https://www.youtube.com/watch?v=") == 0 || userMessage.getText().indexOf("https://youtu.be/") == 0)
-                    {
+                case "/start" -> sendMsg(userMessage, "Hello, " + userMessage.getChat().getUserName() + '!');
+                case "/haruhi" -> sendMsg(userMessage, "https://www.youtube.com/watch?v=IhhHtKg3S20&list=WL&index=79");
+                case "/help" -> sendMsg(userMessage, "I need help too(((");
+                default -> {
+                    String url = userMessage.getText();
+                    if (url.indexOf("https://www.youtube.com/watch?v=") == 0 || url.indexOf("https://youtu.be/") == 0) {
                         sendMsg(userMessage, "Correct link");
-                    }
-                    else
-                    {
+                        IdExtractService idExtractService = new IdExtractService();
+                        String videoID = idExtractService.extractVideoIdFromUrl(url);
+                        VideoDownloaderService.VideoDownloader(videoID);
+                    } else {
                         sendMsg(userMessage, "Wrong link");
                     }
+                }
             }
         }
     }
@@ -68,5 +64,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     @Override
-    public String getBotToken() { return config.getBotToken(); }
+    public String getBotToken() {
+        return config.getBotToken();
+    }
 }

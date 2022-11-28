@@ -26,6 +26,8 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	implementation 'com.github.sealedtx:java-youtube-downloader:3.1.0'
+	implementation group: 'org.bytedeco', name: 'javacv-platform', version: '1.5.8'
+	implementation group: 'com.madgag', name: 'animated-gif-lib', version: '1.2'
 }
 
 tasks.named('test') {
