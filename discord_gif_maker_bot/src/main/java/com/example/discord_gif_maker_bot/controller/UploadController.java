@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -32,10 +33,10 @@ public class UploadController {
 
     private final VideoDecoder videoDecoderService = new VideoDecoder();
 
-    public String upload(File videoFile,
+    public String upload(InputStream videoFile,
                          int start,
                          int end,
-                          int speed,
+                         int speed,
                          boolean repeat) throws IOException, FrameGrabber.Exception {
         String location = "C:\\Tasks\\Java\\Discord_gif_maker_bot\\discord_gif_maker_bot\\downloads\\";
 //        File videoFile = new File(location + "/" + System

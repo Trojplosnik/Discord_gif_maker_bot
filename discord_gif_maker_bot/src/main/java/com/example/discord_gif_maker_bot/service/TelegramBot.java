@@ -14,6 +14,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
@@ -66,34 +68,35 @@ public class TelegramBot extends TelegramLongPollingBot {
                         sendMsg(userMessage, "Correct link");
                         IdExtractService idExtractService = new IdExtractService();
                         String videoID = idExtractService.extractVideoIdFromUrl(url);
-                        File video = VideoDownloaderService.VideoDownloader(videoID);
-                        System.out.println(video.getPath());
-                        File gif = new File(video.getPath());
-                        UploadController uploadController = new UploadController();
-                        String gifPuth;
-                        try {
-                            gifPuth = uploadController.upload(gif, 0,10, 1, true);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                        File gif2 = new File(gifPuth);
-                        InputFile animegif = new InputFile(gif2);
-                        sendAnimation(userMessage, animegif);
+                        var video = VideoDownloaderService.VideoDownloader(videoID);
+
+//                        System.out.println(video.getPath());
+//                        File gif = new File(video.getPath());
+//                        UploadController uploadController = new UploadController();
+//                        String gifPuth;
+//                        try {
+//                            gifPuth = uploadController.upload(gif, 0,10, 1, true);
+//                        } catch (IOException e) {
+//                            throw new RuntimeException(e);
+//                        }
+//                        File gif2 = new File(gifPuth);
+//                        InputFile animegif = new InputFile(gif2);
+//                        sendAnimation(userMessage, animegif);
                     } else {
                         sendMsg(userMessage, "Wrong link");
                         UploadController uploadController = new UploadController();
                         String gifPuth;
-                        File gif = new File("C:\\Tasks\\Java\\Discord_gif_maker_bot\\" +
-                                "discord_gif_maker_bot\\downloads" +
-                                "uWQI-ZMV_Gsz.gif");
-                        try {
-                            gifPuth = uploadController.upload(gif, 0,10, 1, true);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                        File gif2 = new File(gifPuth);
-                        InputFile animegif = new InputFile(gif2);
-                        sendAnimation(userMessage, animegif);
+//                        File gif = new File("C:\\Tasks\\Java\\Discord_gif_maker_bot\\" +
+//                                "discord_gif_maker_bot\\downloads" +
+//                                "uWQI-ZMV_Gsz.gif");
+//                        try {
+//                            gifPuth = uploadController.upload(gif, 0,10, 1, true);
+//                        } catch (IOException e) {
+//                            throw new RuntimeException(e);
+//                        }
+//                        File gif2 = new File(gifPuth);
+//                        InputFile animegif = new InputFile(gif2);
+//                        sendAnimation(userMessage, animegif);
 //                        File gif = new File("C:\\Tasks\\Java\\Discord_gif_maker_bot\\" +
 //                                "discord_gif_maker_bot\\downloads" +
 //                                "REJ.gif");
