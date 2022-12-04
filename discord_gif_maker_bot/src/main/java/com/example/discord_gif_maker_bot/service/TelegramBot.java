@@ -1,7 +1,6 @@
 package com.example.discord_gif_maker_bot.service;
 
 import com.example.discord_gif_maker_bot.config.BotConfig;
-import com.example.discord_gif_maker_bot.controller.UploadController;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -14,8 +13,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
@@ -68,40 +65,16 @@ public class TelegramBot extends TelegramLongPollingBot {
                         sendMsg(userMessage, "Correct link");
                         IdExtractService idExtractService = new IdExtractService();
                         String videoID = idExtractService.extractVideoIdFromUrl(url);
-                        var video = VideoDownloaderService.VideoDownloader(videoID);
-
-//                        System.out.println(video.getPath());
-//                        File gif = new File(video.getPath());
-//                        UploadController uploadController = new UploadController();
-//                        String gifPuth;
-//                        try {
-//                            gifPuth = uploadController.upload(gif, 0,10, 1, true);
-//                        } catch (IOException e) {
-//                            throw new RuntimeException(e);
-//                        }
-//                        File gif2 = new File(gifPuth);
-//                        InputFile animegif = new InputFile(gif2);
-//                        sendAnimation(userMessage, animegif);
+                        File video = VideoDownloaderService.VideoDownloader(videoID);
+                        ConvertorToGif convertorToGif = new ConvertorToGif();
+                        File gif = convertorToGif.toAnimatedGif(video, 0, 30);
+                        InputFile animegif = new InputFile(gif);
+                        sendAnimation(userMessage, animegif);
+                        video.delete();
+                        if(!gif.getName().equals("Error_Gif.gif"))
+                            gif.delete();
                     } else {
                         sendMsg(userMessage, "Wrong link");
-                        UploadController uploadController = new UploadController();
-                        String gifPuth;
-//                        File gif = new File("C:\\Tasks\\Java\\Discord_gif_maker_bot\\" +
-//                                "discord_gif_maker_bot\\downloads" +
-//                                "uWQI-ZMV_Gsz.gif");
-//                        try {
-//                            gifPuth = uploadController.upload(gif, 0,10, 1, true);
-//                        } catch (IOException e) {
-//                            throw new RuntimeException(e);
-//                        }
-//                        File gif2 = new File(gifPuth);
-//                        InputFile animegif = new InputFile(gif2);
-//                        sendAnimation(userMessage, animegif);
-//                        File gif = new File("C:\\Tasks\\Java\\Discord_gif_maker_bot\\" +
-//                                "discord_gif_maker_bot\\downloads" +
-//                                "REJ.gif");
-//                        InputFile animegif = new InputFile(gif);
-//                        sendAnimation(userMessage, animegif);
                     }
                 }
             }
