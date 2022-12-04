@@ -82,7 +82,10 @@ public class ConvertorToGif{
             throw new RuntimeException(e);
         }
         outputFile.delete();
-        return new File(outputSmallFilePath);
-//        return errorGif;
+        if(gifSize < maxSize2){
+            return new File(outputSmallFilePath);
+        }
+
+        return errorGif;
     }
 }
