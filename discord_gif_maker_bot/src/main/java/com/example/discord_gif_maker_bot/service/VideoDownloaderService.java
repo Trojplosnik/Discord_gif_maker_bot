@@ -21,7 +21,7 @@ public class VideoDownloaderService {
 
 //        List<VideoFormat> videoFormats = video.videoFormats();
 
-        File outputDir = new File("downloads");
+        File outputDir = new File("discord_gif_maker_bot/downloads");
         Format format = video.bestVideoFormat();
 
         RequestVideoFileDownload request_video_download = new RequestVideoFileDownload(format)

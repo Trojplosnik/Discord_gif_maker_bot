@@ -11,27 +11,34 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class ConvertorToGif{
-    int maxSize = 8388600;
-    int maxSize2 = 50388600;
-    int sizeLimit = 104857600;
-    File errorGif = new File("downloads/Error_Gif.gif");
-    public File toAnimatedGif(File inputFile, int start, int duration) {
+    private static final int SMALL_SIZE = 8388600;
+    private static final int NORMAL_SIZE = 52420000;
+    int sizeLimit = 0;
+    File errorGif = new File("discord_gif_maker_bot/downloads/Error_Gif.gif");
+    public File toAnimatedGif(File inputFile, int start, int duration, boolean smallSize) {
         String inputFilePath = inputFile.getPath();
         String durationStr;
-        if (duration > 60)
+        if (duration > 60 || duration == 0)
             durationStr = "60";
         else
             durationStr = Integer.toString(duration);
+        if(smallSize){
+             sizeLimit = SMALL_SIZE;
+        }
+        else {
+            sizeLimit = NORMAL_SIZE;
+        }
         String startStr = Integer.toString(start);
-        String location = "downloads/";
+        String location = "discord_gif_maker_bot/downloads/";
         String outputFilePath = location + System.currentTimeMillis() + ".gif";
-        String ffmpegFlags = "fps=24,scale=480:-1:flags=lanczos,split[s0][s1];[s0]palettegen=" +
-                "max_colors=255[p];[s1][p]paletteuse=dither=bayer";
+        String ffmpegFlags = "fps=16,scale=480:-1:flags=lanczos,split[s0][s1];[s0]palettegen=" +
+                "max_colors=128[p];[s1][p]paletteuse=dither=bayer";
         String[] conversionCommands = {"cmd", "/k", "start", "ffmpeg", "-ss", startStr, "-t", durationStr, "-i",
                 inputFilePath, "-filter_complex", ffmpegFlags, outputFilePath };
         try {
             Process conversion = Runtime.getRuntime().exec(conversionCommands);
-            conversion.waitFor(60, TimeUnit.SECONDS);
+            conversion.waitFor(100, TimeUnit.SECONDS);
+
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -45,32 +52,14 @@ public class ConvertorToGif{
         {
             return errorGif;
         }
-        if(gifSize < maxSize2){
+        if(gifSize < sizeLimit){
             return new File(outputFilePath);
         }
-        if(gifSize > sizeLimit){
-            return errorGif;
-        }
-//        String[] betterConversionCommands = {"cmd", "/k", "start","ffmpeg", "-ss", startStr, "-t", durationStr, "-y", "-i",  inputFilePath, "-filter_complex", "scale=480:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=255[p];[s1][p]paletteuse=dither=bayer", outputFilePath };
-//        try {
-//            Process betterConversion = Runtime.getRuntime().exec(betterConversionCommands);
-//            betterConversion.waitFor(60, TimeUnit.SECONDS);
-//        } catch (IOException | InterruptedException e) {
-//
-//            throw new RuntimeException(e);
-//        }
-//        long newGifSize = outputFile.length();
-//        System.out.print(" ");
-//        System.out.print(gifSize);
-//        System.out.print(newGifSize);
-//        System.out.print(" ");
-//        if(newGifSize < maxSize2){
-//            return new File(outputFilePath);
-//        }
 
 
 
-        long sizeCorrection = gifSize/maxSize + 1;
+
+        long sizeCorrection = gifSize/sizeLimit + 1;
         String sizeCorrStr = Long.toString(sizeCorrection);
         System.out.print(sizeCorrStr);
         String outputSmallFilePath = location + System.currentTimeMillis() + ".gif";
@@ -82,8 +71,9 @@ public class ConvertorToGif{
             throw new RuntimeException(e);
         }
         outputFile.delete();
-        if(gifSize < maxSize2){
-            return new File(outputSmallFilePath);
+        File outputSmallFile = new File(outputSmallFilePath);
+        if(outputSmallFile.length() < sizeLimit){
+            return outputSmallFile;
         }
 
         return errorGif;

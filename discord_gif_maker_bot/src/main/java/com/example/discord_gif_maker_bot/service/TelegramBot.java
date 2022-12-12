@@ -61,13 +61,13 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "/help" -> sendMsg(userMessage, "I need help too(((");
                 default -> {
                     String url = userMessage.getText();
-                    if (url.indexOf("https://www.youtube.com/watch?v=") == 0 || url.indexOf("https://youtu.be/") == 0) {
+                    if (url.indexOf("https://www.youtube.com/watch?v=") == 0 || url.indexOf("https://youtu.be/") == 0 || url.indexOf("https://m.youtube.com/watch?v=") == 0 ){
                         sendMsg(userMessage, "Correct link");
                         IdExtractService idExtractService = new IdExtractService();
                         String videoID = idExtractService.extractVideoIdFromUrl(url);
                         File video = VideoDownloaderService.VideoDownloader(videoID);
                         ConvertorToGif convertorToGif = new ConvertorToGif();
-                        File gif = convertorToGif.toAnimatedGif(video, 0, 30);
+                        File gif = convertorToGif.toAnimatedGif(video, 0, 0, true);
                         InputFile animegif = new InputFile(gif);
                         sendAnimation(userMessage, animegif);
                         video.delete();
