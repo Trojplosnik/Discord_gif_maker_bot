@@ -13,6 +13,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
@@ -61,13 +63,32 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "/help" -> sendMsg(userMessage, "I need help too(((");
                 default -> {
                     String url = userMessage.getText();
+                    List<String> items = Arrays.asList(url.split(" "));
                     if (url.indexOf("https://www.youtube.com/watch?v=") == 0 || url.indexOf("https://youtu.be/") == 0 || url.indexOf("https://m.youtube.com/watch?v=") == 0 ){
-                        sendMsg(userMessage, "Correct link");
+                        sendMsg(userMessage, "Correct link, work in progress");
                         IdExtractService idExtractService = new IdExtractService();
-                        String videoID = idExtractService.extractVideoIdFromUrl(url);
+                        String videoID = idExtractService.extractVideoIdFromUrl(items.get(0));
                         File video = VideoDownloaderService.VideoDownloader(videoID);
                         ConvertorToGif convertorToGif = new ConvertorToGif();
-                        File gif = convertorToGif.toAnimatedGif(video, 0, 0, true);
+                        File gif = null;
+                        if (items.size() == 1) {
+                            gif = convertorToGif.toAnimatedGif(video, 0, 30, true);
+                        } else if (items.size() == 3) {
+                            int starttime = TimeParseService.parseTime(items.get(1));
+                            int endtime = TimeParseService.parseTime(items.get(2));
+                            int durtime = endtime - starttime;
+
+                            if (durtime > 30) {
+                                sendMsg(userMessage, "duration more than 30 sec, we made 30sec gif");
+                                gif = convertorToGif.toAnimatedGif(video, starttime, 30, true);
+                            } else {
+                                gif = convertorToGif.toAnimatedGif(video, starttime, durtime, true);
+                            }
+                        } else if (items.size() == 2) {
+                            int starttime = TimeParseService.parseTime(items.get(1));
+                            gif = convertorToGif.toAnimatedGif(video, starttime, 30, true);
+                        }
+
                         InputFile animegif = new InputFile(gif);
                         sendAnimation(userMessage, animegif);
                         video.delete();
