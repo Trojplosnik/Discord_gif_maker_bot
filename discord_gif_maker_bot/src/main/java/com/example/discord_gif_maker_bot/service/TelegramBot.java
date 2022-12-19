@@ -12,7 +12,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,6 +23,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     public TelegramBot(BotConfig config){
         this.config = config;
     }
+    final File errorGif = new File("discord_gif_maker_bot/downloads/Error_Gif.gif");
 
 
 
@@ -69,10 +69,11 @@ public class TelegramBot extends TelegramLongPollingBot {
                         IdExtractService idExtractService = new IdExtractService();
                         String videoID = idExtractService.extractVideoIdFromUrl(items.get(0));
                         File video = VideoDownloaderService.VideoDownloader(videoID);
-                        ConvertorToGif convertorToGif = new ConvertorToGif();
+                        ConvertorToGifService convertorToGif = new ConvertorToGifService();
                         File gif = null;
+                        File cropGif = null;
                         if (items.size() == 1) {
-                            gif = convertorToGif.toAnimatedGif(video, 0, 30, true);
+                            gif = convertorToGif.toAnimatedGif(video, 0, 30);
                         } else if (items.size() == 3) {
                             int starttime = TimeParseService.parseTime(items.get(1));
                             int endtime = TimeParseService.parseTime(items.get(2));
@@ -80,20 +81,34 @@ public class TelegramBot extends TelegramLongPollingBot {
 
                             if (durtime > 30) {
                                 sendMsg(userMessage, "duration more than 30 sec, we made 30sec gif");
-                                gif = convertorToGif.toAnimatedGif(video, starttime, 30, true);
+                                gif = convertorToGif.toAnimatedGif(video, starttime, 30);
+                                cropGif = gif;
                             } else {
-                                gif = convertorToGif.toAnimatedGif(video, starttime, durtime, true);
+                                gif = convertorToGif.toAnimatedGif(video, starttime, durtime);
+                                cropGif = gif;
                             }
                         } else if (items.size() == 2) {
                             int starttime = TimeParseService.parseTime(items.get(1));
-                            gif = convertorToGif.toAnimatedGif(video, starttime, 30, true);
-                        }
+                            gif = convertorToGif.toAnimatedGif(video, starttime, 30);
 
-                        InputFile animegif = new InputFile(gif);
+                            cropGif = gif;
+                        } else if (items.size() == 5) {
+                            int starttime = TimeParseService.parseTime(items.get(1));
+                            int endtime = TimeParseService.parseTime(items.get(2));
+                            int durtime = endtime - starttime;
+                            String height = items.get(3);
+                            String weight = items.get(4);
+                            gif = convertorToGif.toAnimatedGif(video, starttime, durtime);
+                            cropGif = new CropGif().crop(gif, height, weight);
+                        }
+                        if(cropGif == null){
+                            cropGif = errorGif;
+                        }
+                        InputFile animegif = new InputFile(cropGif);
                         sendAnimation(userMessage, animegif);
                         video.delete();
-                        if(!gif.getName().equals("Error_Gif.gif"))
-                            gif.delete();
+                        cropGif.delete();
+                        gif.delete();
                     } else {
                         sendMsg(userMessage, "Wrong link");
                     }
