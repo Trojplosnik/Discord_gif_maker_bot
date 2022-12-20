@@ -15,20 +15,39 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Objects;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
 public class DemoApplication {
 
-    public static void main(String[] argv) {
-//        String[] cropCommands = {"cmd", "/k", "start", "ffmpeg", "-i", "discord_gif_maker_bot/downloads/1671474157111.gif", "-vf", "crop=",
-//                "240",":", "270", "discord_gif_maker_bot/downloads/1671474366804.gif"};
-        String cropCommands = "cmd /k start "+"ffmpeg -i " + "discord_gif_maker_bot/downloads/1671474157111.gif" +  " -vf crop=" + "240" + ":" + "270" + " " + "discord_gif_maker_bot/downloads/1671474366804.gif";
+    private static String[] percentConvertor(String height, String weight){
+        int I_height, I_weight;
         try{
-            Process crop = Runtime.getRuntime().exec(cropCommands);
-            crop.waitFor(10, TimeUnit.SECONDS);
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+            I_height = Integer.parseInt(height);
+            I_weight = Integer.parseInt(weight);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+        if(I_height > 99 || I_height < 10 || I_weight > 99 || I_weight < 10)
+        {
+            return null;
+        }
+        I_height = (int) (I_height * 2.7);
+        I_weight = (int) (I_weight * 4.8);
+        return new String[]{Integer.toString(I_height), Integer.toString(I_weight)};
+    }
+    public static void main(String[] argv) {
+        Scanner in = new Scanner(System.in);
+        while (true){
+        String height = in.nextLine();
+        String weight = in.nextLine();
+        String h = Objects.requireNonNull(percentConvertor(height, weight))[0];
+        String w = Objects.requireNonNull(percentConvertor(height, weight))[1];
+        System.out.print(h);
+        System.out.print(w);
+        System.out.print("\n");
         }
     }
 }

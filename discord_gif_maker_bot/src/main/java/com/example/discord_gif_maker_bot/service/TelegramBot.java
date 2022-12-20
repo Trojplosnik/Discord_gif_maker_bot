@@ -25,7 +25,22 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
     final File errorGif = new File("discord_gif_maker_bot/downloads/Error_Gif.gif");
 
-
+    private String[] percentConvertor(String height, String weight){
+        int I_height, I_weight;
+        try{
+            I_height = Integer.parseInt(height);
+            I_weight = Integer.parseInt(weight);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+        if(I_height > 99 || I_height < 10 || I_weight > 99 || I_weight < 10)
+        {
+            return null;
+        }
+        I_height = (int) (I_height * 2.7);
+        I_weight = (int) (I_weight * 4.8);
+        return new String[]{Integer.toString(I_height), Integer.toString(I_weight)};
+    }
 
     public void sendMsg(@NotNull Message userMessage, String text){
         SendMessage sendMessage = new SendMessage();
@@ -57,6 +72,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         Message userMessage = update.getMessage();
         if (update.hasMessage() && userMessage.hasText()) {
+            System.out.print(userMessage.getChat().getUserName());
             switch (userMessage.getText()) {
                 case "/start" -> sendMsg(userMessage, "Hello, " + userMessage.getChat().getUserName() + '!');
                 case "/haruhi" -> sendMsg(userMessage, "https://www.youtube.com/watch?v=IhhHtKg3S20&list=WL&index=79");
@@ -74,6 +90,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                         File cropGif = null;
                         if (items.size() == 1) {
                             gif = convertorToGif.toAnimatedGif(video, 0, 30);
+                            cropGif = gif;
                         } else if (items.size() == 3) {
                             int starttime = TimeParseService.parseTime(items.get(1));
                             int endtime = TimeParseService.parseTime(items.get(2));
@@ -101,10 +118,11 @@ public class TelegramBot extends TelegramLongPollingBot {
                             gif = convertorToGif.toAnimatedGif(video, starttime, durtime);
                             cropGif = new CropGif().crop(gif, height, weight);
                         }
+                        InputFile animegif = null;
                         if(cropGif == null){
-                            cropGif = errorGif;
+                            animegif = new InputFile(errorGif);
                         }
-                        InputFile animegif = new InputFile(cropGif);
+                        animegif = new InputFile(cropGif);
                         sendAnimation(userMessage, animegif);
                         video.delete();
                         cropGif.delete();

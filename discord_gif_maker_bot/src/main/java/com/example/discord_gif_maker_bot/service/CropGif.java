@@ -14,9 +14,9 @@ public class CropGif {
         }
         String inputFilePath = inputFile.getPath();
         String outputFilePath = location + System.currentTimeMillis() + ".gif";
-//        String[] cropCommands = {"cmd", "/k", "start", "ffmpeg", "-i", inputFilePath, "-vf", "crop=",
-//                weight,":", height, outputFilePath };
-        String cropCommands = "cmd /k start "+"ffmpeg -i " + inputFilePath +  " -vf crop=" + weight + ":" + height + " " + outputFilePath;
+        String cropConf = "crop=" + weight + ":" + height;
+        String[] cropCommands = {"cmd", "/k", "start", "ffmpeg", "-i", inputFilePath, "-vf", cropConf, outputFilePath };
+
         try{
             Process crop = Runtime.getRuntime().exec(cropCommands);
             crop.waitFor(30, TimeUnit.SECONDS);

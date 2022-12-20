@@ -9,6 +9,9 @@ public class JackalService {
     String location = "discord_gif_maker_bot/downloads/";
     File jackaling(File inputFile){
         long gifSize = inputFile.length();
+        if (gifSize < SIZE_LIMIT){
+            return inputFile;
+        }
         long sizeCorrection = gifSize/SIZE_LIMIT + 1;
         String sizeCorrStr = Long.toString(sizeCorrection);
         System.out.print(sizeCorrStr);
