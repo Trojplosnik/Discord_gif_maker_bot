@@ -12,23 +12,23 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
 public class DemoApplication {
 
     public static void main(String[] argv) {
-        YoutubeDownloader downloader = new YoutubeDownloader();
-
-        RequestVideoInfo request = new RequestVideoInfo("D91DpmvesDI");
-        Response<VideoInfo> response = downloader.getVideoInfo(request);
-        VideoInfo video = response.data();
-
-        Format format = video.bestVideoFormat();
-
-        OutputStream os = new ByteArrayOutputStream();
-        RequestVideoStreamDownload request_1 = new RequestVideoStreamDownload(format, os);
-        System.out.println(os);
+//        String[] cropCommands = {"cmd", "/k", "start", "ffmpeg", "-i", "discord_gif_maker_bot/downloads/1671474157111.gif", "-vf", "crop=",
+//                "240",":", "270", "discord_gif_maker_bot/downloads/1671474366804.gif"};
+        String cropCommands = "cmd /k start "+"ffmpeg -i " + "discord_gif_maker_bot/downloads/1671474157111.gif" +  " -vf crop=" + "240" + ":" + "270" + " " + "discord_gif_maker_bot/downloads/1671474366804.gif";
+        try{
+            Process crop = Runtime.getRuntime().exec(cropCommands);
+            crop.waitFor(10, TimeUnit.SECONDS);
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

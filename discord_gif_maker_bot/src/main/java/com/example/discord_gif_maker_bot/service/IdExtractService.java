@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 public class IdExtractService {
     final String youTubeUrlRegEx = "^(https?)?(://)?(www.)?(m.)?((youtube.com)|(youtu.be))/";
-    final String[] videoIdRegex = { "\\?vi?=([^&]*)","watch\\?.*v=([^&]*)", "(?:embed|vi?)/([^/?]*)", "^([A-Za-z0-9\\-]*)"};
+    final String[] videoIdRegex = { "\\?vi?=([^&]*)", "watch\\?.v=([^&]*)", "(?:embed|vi?)/([^/?]*)", "^([A-Za-z0-9\\-\\_]*)" };
 
     public String extractVideoIdFromUrl(String url) {
         String youTubeLinkWithoutProtocolAndDomain = youTubeLinkWithoutProtocolAndDomain(url);
