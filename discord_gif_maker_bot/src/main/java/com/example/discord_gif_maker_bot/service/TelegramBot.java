@@ -33,7 +33,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         } catch (NumberFormatException e) {
             return null;
         }
-        if(I_height > 99 || I_height < 10 || I_weight > 99 || I_weight < 10)
+        if(I_height > 100 || I_height < 10 || I_weight > 100 || I_weight < 10)
         {
             return null;
         }
@@ -116,13 +116,23 @@ public class TelegramBot extends TelegramLongPollingBot {
                             String height = items.get(3);
                             String weight = items.get(4);
                             gif = convertorToGif.toAnimatedGif(video, starttime, durtime);
-                            cropGif = new CropGif().crop(gif, height, weight);
+                            String[] it = percentConvertor(height, weight);
+//                            cropGif = new CropGif().crop(gif, height, weight);
+                            if (it != null){
+                                System.out.print(it[0]);
+                                System.out.print(it[1]);
+                                cropGif = new CropGif().crop(gif, it[0], it[1]);
+                            } else {
+                                cropGif = gif;
+                            }
                         }
                         InputFile animegif = null;
                         if(cropGif == null){
                             animegif = new InputFile(errorGif);
                         }
-                        animegif = new InputFile(cropGif);
+                        else {
+                            animegif = new InputFile(cropGif);
+                        }
                         sendAnimation(userMessage, animegif);
                         video.delete();
                         cropGif.delete();
